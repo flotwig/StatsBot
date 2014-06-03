@@ -1,0 +1,20 @@
+{
+	"server": "irc.snoonet.org",
+	"port": 6667,
+	"ssl": false,
+	"command": "!stats",
+	"nickserv": {
+		"nick": "StatsBot",
+		"pass": ""
+	},
+	"locations": {
+		"logs": "./logs",
+		"stats": "./stats",
+		"url": "http://example.com/statsDir/"
+	},
+	"identity": {
+		"nick": "StatsBot",
+		"ident": "statsbot",
+		"realname": "StatsBot"
+	}
+}
