@@ -138,7 +138,7 @@ final class StatsBot {
 	function msg($to,$message,$type='PRIVMSG'){
 		return $this->send($type.' '.$to.' :'.$message);
 	}
-	function $this->fixDir($dirName){
+	function fixDir($dirName){
 		return preg_replace('[^A-Za-z0-9]','_',$dirName);
 	}
 }
