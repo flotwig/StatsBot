@@ -140,4 +140,4 @@ final class StatsBot {
 		return $this->send($type.' '.$to.' :'.$message);
 	}
 }
-new StatsBot;
+while(TRUE)new StatsBot;
