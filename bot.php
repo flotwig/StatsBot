@@ -13,6 +13,7 @@ final class StatsBot {
 		$this->channels=file_get_contents('channels.txt');
 		$this->channels=explode("\n",$this->channels);
 		$this->nick=$this->settings['identity']['nick'];
+		$this->saveChannels();
 		$this->connect();
 		if($this->socket)unset($this);
 		while($this->socket){
@@ -64,7 +65,7 @@ final class StatsBot {
 		}elseif(in_array(':'.$this->settings['command'],$bufferParts)){
 			$this->msg($nick,'Stats for this channel can be found at '.
 												$this->settings['locations']['url'].
-												$this->fixDir($channel).'.html',
+												$channel.'.html',
 												'NOTICE');
 		}elseif(strtolower($bufferParts[1])==='invite'){
 			$this->send('JOIN '.$arguments[0]);
@@ -85,13 +86,13 @@ final class StatsBot {
 		$pisg='';
 		foreach($this->channels as $channel){
 			$pisg.=	'<channel="'.$channel.'">'."\n".
-					'	OutputFile="'.$this->settings['locations']['stats'].$this->fixDir($channel).'.html"'."\n".
-					'	LogDir="logs/'.$this->fixDir($channel).'/"'."\n".
+					'	OutputFile="'.$this->settings['locations']['stats'].$channel.'.html"'."\n".
+					'	LogDir="logs/'.$channel.'/"'."\n".
 					'</channel>'."\n";
 		}
 		file_put_contents('pisgInclude.cfg',$pisg);
 		foreach($this->channels as $channel){
-			if(!is_dir('logs/'.$this->fixDir($channel)))mkdir('logs/'.$channel);
+			if(!is_dir('logs/'.$channel))mkdir('logs/'.$channel);
 		}
 	}
 	function logLine($buffer,$bufferParts,$nick,$channel){
@@ -130,16 +131,13 @@ final class StatsBot {
 			default:
 				return;
 		}
-		file_put_contents('logs/'.$this->fixDir($channel).'/'.date('Y-m-d').'.log',$line."\n",FILE_APPEND);
+		file_put_contents('logs/'.$channel.'/'.date('Y-m-d').'.log',$line."\n",FILE_APPEND);
 	}
 	function send($line){
 		return fwrite($this->socket,$line."\n\r");
 	}
 	function msg($to,$message,$type='PRIVMSG'){
 		return $this->send($type.' '.$to.' :'.$message);
-	}
-	function fixDir($dirName){
-		return preg_replace('[^A-Za-z0-9]','_',$dirName);
 	}
 }
 new StatsBot;
