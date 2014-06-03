@@ -1,6 +1,7 @@
 <?php
 set_time_limit(0); // so your bot doesn't die after 30 seconds
 date_default_timezone_set(date_default_timezone_get()); // because PHP can be a bitch sometimes
+echo 'Running.'."\n";
 final class StatsBot {
 	private $settings;
 	private $socket;
@@ -13,7 +14,8 @@ final class StatsBot {
 		$this->channels=explode("\n",$this->channels);
 		$this->nick=$this->settings['identity']['nick'];
 		$this->connect();
-		while(!feof($this->socket)){
+		if($this->socket)unset($this);
+		while($this->socket){
 			$this->mainLoop();
 		}
 	}
@@ -32,12 +34,14 @@ final class StatsBot {
 		// data extraction
 		$buffer=fgets($this->socket);
 		$buffer=substr($buffer,0,strlen($buffer)-2); //remove \r\n
-		var_dump($buffer);
 		if(empty($buffer))return;
 		$bufferParts=explode(' ',$buffer);
 		$nick=explode('!',$bufferParts[0]);
 		$nick=substr($nick[0],1);
 		$channel=@$bufferParts[2];
+		if($channel&&substr($channel,0,1)===':'){
+			$channel=substr($channel,1);
+		}
 		$inConvo=($channel==$this->nick);
 		if ($inConvo)$channel=$nick;
 		$arguments=$bufferParts;
@@ -55,8 +59,9 @@ final class StatsBot {
 				$this->send('JOIN '.$channel);
 			}
 		}elseif($bufferParts[0]==='PING'){
-			$this->send('PONG ' . str_replace(array("\n","\r"),'',end(explode(' ',$buffer,2))));
-		}elseif(in_array(':'.strtolower($this->settings['command']),$bufferParts)){
+			$pingReply=explode(' ',$buffer,2);
+			$this->send('PONG '.str_replace("\n\r",'',end($pingReply)));
+		}elseif(in_array(':'.$this->settings['command'],$bufferParts)){
 			$this->msg($nick,'Stats for this channel can be found at '.
 												$this->settings['locations']['url'].
 												$channel.'.html',
@@ -68,17 +73,70 @@ final class StatsBot {
 		}elseif(strtolower($bufferParts[1])==='kick'&&strtolower($bufferParts[3])===strtolower($this->nick)){
 			$this->channels=array_diff($this->channels,array($bufferParts[2]));
 			$this->saveChannels();
+		}elseif(strtolower($bufferParts[1])==='privmsg'&&
+				$bufferParts[2]===$this->nick&&
+				in_array(':help',$bufferParts)){
+			$this->msg($nick,'For help with this bot, visit https://goo.gl/tUAEvh','NOTICE');
 		}
+		$this->logLine($buffer,$bufferParts,$nick,$channel);
 	}
 	function saveChannels(){
-		return file_put_contents('channels.txt',implode("\n",$this->channels));
+		file_put_contents('channels.txt',implode("\n",$this->channels));
+		$pisg='';
+		foreach($this->channels as $channel){
+			$pisg.=	'<channel="'.$channel.'">'."\n".
+					'	OutputFile="'.$this->settings['locations']['stats'].$channel.'"'."\n".
+					'	LogDir="logs/'.$channel.'/"'."\n".
+					'</channel>'."\n";
+		}
+		file_put_contents('pisgInclude.cfg',$pisg);
+		foreach($this->channels as $channel){
+			if(!is_dir('logs/'.$channel))mkdir('logs/'.$channel);
+		}
+	}
+	function logLine($buffer,$bufferParts,$nick,$channel){
+		if(@substr($bufferParts[2],0,1)!=='#'&&@substr($bufferParts[2],0,2)!==':#')return; //not in channel
+		$message=explode(' ',$buffer);
+		$i=0;
+		while($i++<3) array_shift($message);
+		$message=implode(' ',$message);
+		$message=substr($message,1);
+		$line='['.date('H:i:s').'] ';
+		switch(strtolower($bufferParts[1])){
+			case 'privmsg':
+				if(substr($message,0,7)===chr(1).'ACTION'&&substr($message,-1,1)===chr(1)){ //it's a /me
+					$line.='*** '.$nick.' '.substr($message,7,strlen($message)-1);
+					break;
+				}
+				$line.='<'.$nick.'> '.$message;
+				break;
+			case 'topic':
+				$line.='*** '.$nick.' changes topic to \''.$message.'\'';
+				break;
+			case 'kick':
+				$line.='*** '.$bufferParts[3].' was kicked by '.$nick.' ('.$message.')';
+				break;
+			case 'mode':
+				$line.='*** '.$nick.' sets mode: ';
+				$i=0;
+				while($i++<3) array_shift($bufferParts);
+				$line.=implode(' ',$bufferParts);
+				break;
+			case 'join':
+				$line.='*** Joins: ';
+				$line.=str_replace('!',' (',substr($bufferParts[0],1));
+				$line.=')';
+				break;
+			default:
+				return;
+		}
+		file_put_contents('logs/'.$channel.'/'.date('Y-m-d').'.log',$line."\n",FILE_APPEND);
 	}
 	function send($line){
-		echo $line."\n";
 		return fwrite($this->socket,$line."\n\r");
 	}
 	function msg($to,$message,$type='PRIVMSG'){
 		return $this->send($type.' '.$to.' :'.$message);
 	}
 }
-$bot=new StatsBot;
+new StatsBot;
