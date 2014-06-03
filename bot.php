@@ -64,7 +64,7 @@ final class StatsBot {
 		}elseif(in_array(':'.$this->settings['command'],$bufferParts)){
 			$this->msg($nick,'Stats for this channel can be found at '.
 												$this->settings['locations']['url'].
-												fixDir($channel).'.html',
+												$this->fixDir($channel).'.html',
 												'NOTICE');
 		}elseif(strtolower($bufferParts[1])==='invite'){
 			$this->send('JOIN '.$arguments[0]);
@@ -85,13 +85,13 @@ final class StatsBot {
 		$pisg='';
 		foreach($this->channels as $channel){
 			$pisg.=	'<channel="'.$channel.'">'."\n".
-					'	OutputFile="'.$this->settings['locations']['stats'].fixDir($channel).'.html"'."\n".
-					'	LogDir="logs/'.fixDir($channel).'/"'."\n".
+					'	OutputFile="'.$this->settings['locations']['stats'].$this->fixDir($channel).'.html"'."\n".
+					'	LogDir="logs/'.$this->fixDir($channel).'/"'."\n".
 					'</channel>'."\n";
 		}
 		file_put_contents('pisgInclude.cfg',$pisg);
 		foreach($this->channels as $channel){
-			if(!is_dir('logs/'.fixDir($channel)))mkdir('logs/'.$channel);
+			if(!is_dir('logs/'.$this->fixDir($channel)))mkdir('logs/'.$channel);
 		}
 	}
 	function logLine($buffer,$bufferParts,$nick,$channel){
@@ -130,7 +130,7 @@ final class StatsBot {
 			default:
 				return;
 		}
-		file_put_contents('logs/'.fixDir($channel).'/'.date('Y-m-d').'.log',$line."\n",FILE_APPEND);
+		file_put_contents('logs/'.$this->fixDir($channel).'/'.date('Y-m-d').'.log',$line."\n",FILE_APPEND);
 	}
 	function send($line){
 		return fwrite($this->socket,$line."\n\r");
@@ -138,7 +138,7 @@ final class StatsBot {
 	function msg($to,$message,$type='PRIVMSG'){
 		return $this->send($type.' '.$to.' :'.$message);
 	}
-	function fixDir($dirName){
+	function $this->fixDir($dirName){
 		return preg_replace('[^A-Za-z0-9]','_',$dirName);
 	}
 }
