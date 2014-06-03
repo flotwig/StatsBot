@@ -4,7 +4,7 @@ StatsBot
 StatsBot is a bot which collects and displays detailed statistics about a channel, including user rankings, totals, and notable numbers.
 
 To summon Statistics to your channel on Snoonet, simply invite it to your channel.  
-`/invite #channel Statistics`
+`/invite Statistics #channel`
 
 To remove Statistics from your channel on Snoonet, kick it out like you would any other user.  
 `/kick #channel Statistics`
