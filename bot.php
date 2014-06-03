@@ -65,7 +65,7 @@ final class StatsBot {
 		}elseif(in_array(':'.$this->settings['command'],$bufferParts)){
 			$this->msg($nick,'Stats for this channel can be found at '.
 												$this->settings['locations']['url'].
-												$channel.'.html',
+												urlencode($channel).'.html',
 												'NOTICE');
 		}elseif(strtolower($bufferParts[1])==='invite'){
 			$this->send('JOIN '.$arguments[0]);
