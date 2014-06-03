@@ -1,4 +1,5 @@
 settings.json
 channels.txt
 logs/*
-pisgInclude.cfg
+pisg.cfg
+pisgPrefix.cfg

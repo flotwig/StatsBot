@@ -83,14 +83,14 @@ final class StatsBot {
 	}
 	function saveChannels(){
 		file_put_contents('channels.txt',implode("\n",$this->channels));
-		$pisg='';
+		$pisg=file_get_contents('pisgPrefix.cfg');
 		foreach($this->channels as $channel){
 			$pisg.=	'<channel="'.$channel.'">'."\n".
 					'	OutputFile="'.$this->settings['locations']['stats'].$channel.'.html"'."\n".
 					'	LogDir="logs/'.$channel.'/"'."\n".
 					'</channel>'."\n";
 		}
-		file_put_contents('pisgInclude.cfg',$pisg);
+		file_put_contents('pisg.cfg',$pisg);
 		foreach($this->channels as $channel){
 			if(!is_dir('logs/'.$channel))mkdir('logs/'.$channel);
 		}
