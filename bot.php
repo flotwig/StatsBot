@@ -52,8 +52,8 @@ final class StatsBot {
 			sleep(1); // secret sauce
 			$this->send('MODE '.$this->nick.' +B'); // we are a bot
 			if($this->settings['nickserv']['pass']!==''){
-				$this->msg('NickServ','IDENTIFY'.
-								$this->settings['nickserv']['nick'].
+				$this->msg('NickServ','IDENTIFY '.
+								$this->settings['nickserv']['nick'].' '.
 								$this->settings['nickserv']['pass']);
 			}	
 			foreach($this->channels as $channel){
