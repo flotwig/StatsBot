@@ -2,7 +2,7 @@
 set_time_limit(0); // so your bot doesn't die after 30 seconds
 date_default_timezone_set(date_default_timezone_get()); // because PHP can be a bitch sometimes
 echo 'Running.'."\n";
-final class StatsBot {
+final class StatsBot{
 	private $settings;
 	private $socket;
 	private $nick;
