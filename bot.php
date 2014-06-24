@@ -92,7 +92,7 @@ final class StatsBot {
 		}
 		file_put_contents('pisg.cfg',$pisg);
 		foreach($this->channels as $channel){
-			if(!is_dir('logs/'.$channel))mkdir('logs/'.$channel);
+			if(!is_dir('logs/'.trim($channel)))mkdir('logs/'.trim($channel));
 		}
 	}
 	function logLine($buffer,$bufferParts,$nick,$channel){
@@ -131,7 +131,7 @@ final class StatsBot {
 			default:
 				return;
 		}
-		file_put_contents('logs/'.$channel.'/'.date('Y-m-d').'.log',$line."\n",FILE_APPEND);
+		file_put_contents('logs/'.trim($channel).'/'.date('Y-m-d').'.log',$line."\n",FILE_APPEND);
 	}
 	function send($line){
 		return fwrite($this->socket,$line."\n\r");
