@@ -4,3 +4,4 @@ logs/*
 pisg.cfg
 pisgPrefix.cfg
 cache/
+indexTemplate.html
