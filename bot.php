@@ -21,7 +21,10 @@ final class StatsBot{
 		}
 	}
 	function __destruct(){
-		// TODO: Send quit, close file handlers
+		foreach($this->channels as $channel) $this->send('PART '.$channel.' :StatsBot out');
+		$this->send('QUIT :StatsBot out');
+		fclose($this->socket);
+		exit(0);
 	}
 	function connect(){
 		$uri=$this->settings['server'];
