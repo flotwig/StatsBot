@@ -3,3 +3,4 @@ channels.txt
 logs/*
 pisg.cfg
 pisgPrefix.cfg
+cache/
