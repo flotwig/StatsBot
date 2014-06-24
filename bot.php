@@ -108,7 +108,8 @@ final class StatsBot{
 		}
 	}
 	function logLine($buffer,$bufferParts,$nick,$channel){
-		if(@substr($bufferParts[2],0,1)!=='#'&&@substr($bufferParts[2],0,2)!==':#')return; //not in channel
+		if((@substr($bufferParts[2],0,1)!=='#'&&@substr($bufferParts[2],0,2)!==':#')&&
+		    strtolower($bufferParts[1])!=='nick')return; //not in channel, not nick
 		$message=explode(' ',$buffer);
 		$i=0;
 		while($i++<3) array_shift($message);
@@ -140,8 +141,17 @@ final class StatsBot{
 				$line.=str_replace('!',' (',substr($bufferParts[0],1));
 				$line.=')';
 				break;
+			case 'nick':
+				$line.='*** '.$nick.' is now known as '.trim($bufferParts[2]);
+				break;
 			default:
 				return;
+		}
+		if(strtolower($bufferParts[1])==='nick'){
+			foreach($this->channels as $channel){
+				file_put_contents('logs/'.trim($channel).'/'.date('Y-m-d').'.log',$line."\n",FILE_APPEND);
+			}
+			return;
 		}
 		file_put_contents('logs/'.trim($channel).'/'.date('Y-m-d').'.log',$line."\n",FILE_APPEND);
 	}
