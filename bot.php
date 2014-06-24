@@ -82,6 +82,7 @@ final class StatsBot{
 		$this->logLine($buffer,$bufferParts,$nick,$channel);
 	}
 	function saveChannels(){
+		$this->channels=array_filter($this->channels);
 		file_put_contents('channels.txt',implode("\n",$this->channels));
 		$pisg=file_get_contents('pisgPrefix.cfg');
 		foreach($this->channels as $channel){
@@ -93,6 +94,17 @@ final class StatsBot{
 		file_put_contents('pisg.cfg',$pisg);
 		foreach($this->channels as $channel){
 			if(!is_dir('logs/'.trim($channel)))mkdir('logs/'.trim($channel));
+		}
+		if(file_exists('./indexTemplate.html')){
+			$lis='';
+			$sortChannels=$this->channels;
+			natcasesort($sortChannels);
+			foreach($sortChannels as $channel){
+				$lis.='<li><a href="'.htmlspecialchars(urlencode($channel)).'.html">'.htmlspecialchars($channel).'</a></li>'."\n";
+			}
+			$template=file_get_contents('./indexTemplate.html');
+			$template=str_replace('%lis%',$lis,$template);
+			file_put_contents($this->settings['locations']['stats'].'index.html',$template);
 		}
 	}
 	function logLine($buffer,$bufferParts,$nick,$channel){
