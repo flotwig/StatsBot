@@ -1,3 +1,4 @@
+#!/usr/bin/php
 <?php
 set_time_limit(0); // so your bot doesn't die after 30 seconds
 date_default_timezone_set(date_default_timezone_get()); // because PHP can be a bitch sometimes
@@ -15,8 +16,7 @@ final class StatsBot{
 		$this->nick=$this->settings['identity']['nick'];
 		$this->saveChannels();
 		$this->connect();
-		if($this->socket)unset($this);
-		while($this->socket){
+		while(!feof($this->socket)){
 			$this->mainLoop();
 		}
 	}
@@ -33,6 +33,7 @@ final class StatsBot{
 		stream_set_blocking($this->socket,1); // we fix the dreaded 100% CPU issue
 		$this->send('USER '.$this->settings['identity']['ident'].' 8 * :'.$this->settings['identity']['realname']);
 		$this->send('NICK '.$this->nick);
+		if(!empty($this->settings['pass']))$this->send('PASS '.$this->settings['pass']);
 	}
 	function mainLoop(){
 		// data extraction
