@@ -79,7 +79,7 @@ final class StatsBot{
 												$this->settings['locations']['url'].
 												urlencode($channel).'.html',
 												'NOTICE');
-		}elseif(strtolower($bufferParts[1])==='invite'){
+		}elseif(strtolower($bufferParts[1])==='invite'&&!in_array($arguments[0],$this->channels)){
 			$this->send('JOIN '.$arguments[0]);
 			$this->channels[]=substr($arguments[0],1);
 			$this->saveChannels();
