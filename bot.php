@@ -16,7 +16,7 @@ final class StatsBot{
 		$this->nick=$this->settings['identity']['nick'];
 		$this->saveChannels();
 		$this->connect();
-		while(!feof($this->socket)){
+		while($this->socket){
 			$this->mainLoop();
 		}
 	}
@@ -33,11 +33,11 @@ final class StatsBot{
 		stream_set_blocking($this->socket,1); // we fix the dreaded 100% CPU issue
 		$this->send('USER '.$this->settings['identity']['ident'].' 8 * :'.$this->settings['identity']['realname']);
 		$this->send('NICK '.$this->nick);
-		if(!empty($this->settings['pass']))$this->send('PASS '.$this->settings['pass']);
 	}
 	function mainLoop(){
 		// data extraction
 		$buffer=fgets($this->socket);
+#		echo $buffer;
 		$buffer=substr($buffer,0,strlen($buffer)-2); //remove \r\n
 		if(empty($buffer))return;
 		$bufferParts=explode(' ',$buffer);
@@ -47,6 +47,9 @@ final class StatsBot{
 		if($channel&&substr($channel,0,1)===':'){
 			$channel=substr($channel,1);
 		}
+		if(strstr($buffer,'NOTICE AUTH')){
+			$this->send('PASS '.$this->settings['pass']);
+		}
 		$inConvo=($channel==$this->nick);
 		if ($inConvo)$channel=$nick;
 		$arguments=$bufferParts;
@@ -55,6 +58,11 @@ final class StatsBot{
 		if($bufferParts[1]==='002'){ // connection established keyword
 			sleep(1); // secret sauce
 			$this->send('MODE '.$this->nick.' +B'); // we are a bot
+			if(isset($this->settings['oper'])){
+				$this->send('OPER '.
+				                  $this->settings['oper']['user'].' '.
+				                  $this->settings['oper']['pass']);
+			}
 			if($this->settings['nickserv']['pass']!==''){
 				$this->msg('NickServ','IDENTIFY '.
 								$this->settings['nickserv']['nick'].' '.
@@ -160,7 +168,8 @@ final class StatsBot{
 		file_put_contents('logs/'.trim($channel).'/'.date('Y-m-d').'.log',$line."\n",FILE_APPEND);
 	}
 	function send($line){
-		return fwrite($this->socket,$line."\n\r");
+#		echo $line."\n\r";
+		return fwrite($this->socket,$line."\r\n");
 	}
 	function msg($to,$message,$type='PRIVMSG'){
 		return $this->send($type.' '.$to.' :'.$message);
