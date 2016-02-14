@@ -15,10 +15,8 @@ final class StatsBot{
 		$this->channels=explode("\n",$this->channels);
 		$this->nick=$this->settings['identity']['nick'];
 		$this->saveChannels();
-		echo 'connecting';
 		$this->connect();
 		while($this->socket){
-#			echo 'looping';
 			$this->mainLoop();
 		}
 	}
@@ -31,15 +29,7 @@ final class StatsBot{
 	function connect(){
 		$uri=$this->settings['server'];
 		if($this->settings['ssl'])$uri='ssl://'.$uri;
-#		$this->socket=fsockopen($uri,$this->settings['port'],$errno,$errstr,20);
-$context = stream_context_create(array(
-    'ssl' => array(
-        'verify_peer' => false,
-        'verify_peer_name' => false,
-        'allow_self_signed' => true
-    )
-));
-		$this->socket=stream_socket_client($uri.':'.$this->settings['port'],$errno,$errstr,20,STREAM_CLIENT_CONNECT,$context);
+		$this->socket=fsockopen($uri,$this->settings['port'],$errno,$errstr,20);
 		stream_set_blocking($this->socket,1); // we fix the dreaded 100% CPU issue
 		$this->send('USER '.$this->settings['identity']['ident'].' 8 * :'.$this->settings['identity']['realname']);
 		$this->send('NICK '.$this->nick);
