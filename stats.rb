@@ -83,7 +83,7 @@ class Stats
     if File.exists?('./indexTemplate.html')
       File.open(@settings['locations']['stats']+'index.html','w').puts(IO.read('indexTemplate.html').sub('%lis%',
           bot.channels.map { |channel| sprintf '<li><a href="%s">%s</a></li>', Addressable::URI.encode(channel.to_s), channel.to_s
-      }))
+      }.join))
     end
     @channels = File.readlines('channels.txt')
   end
