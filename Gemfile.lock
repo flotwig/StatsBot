@@ -2,12 +2,15 @@ GEM
   remote: https://rubygems.org/
   specs:
     cinch (2.3.1)
+    cinch-identify (1.7.0)
+      cinch (~> 2.0)
 
 PLATFORMS
   x64-mingw32
 
 DEPENDENCIES
   cinch
+  cinch-identify
 
 BUNDLED WITH
    1.11.2
