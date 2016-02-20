@@ -40,7 +40,7 @@ class Stats
   end
   def invite(msg)
     if validate_channel_name(msg.channel.to_s)
-      bot.join(msg.channel)
+      msg.channel.join
     else
       msg.user.notice('I cannot join that channel.')
     end
@@ -82,7 +82,7 @@ class Stats
     cfg.close
     if File.exists?('./indexTemplate.html')
       File.open(@settings['locations']['stats']+'index.html','w').puts(IO.read('indexTemplate.html').sub('%lis%',
-          bot.channels.map { |channel| sprintf '<li><a href="%s">%s</a></li>', Addressable::URI.encode(channel.to_s), channel.to_s
+          bot.channels.map { |channel| sprintf '<li><a href="%s">%s</a></li>', Addressable::URI.encode(channel.to_s).sub('#','%23'), channel.to_s
       }.join))
     end
     @channels = File.readlines('channels.txt')
@@ -91,6 +91,7 @@ class Stats
     # check that it doesn't do any path traversal
     # check that it doesn't contain illegal filename characters
     # check that it doesn't have any html tags in it
+
     channel_name.scan(/[\.\/\\<>]/).count == 0
   end
   # various interpreters for logged events below
