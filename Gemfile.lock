@@ -1,0 +1,20 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    addressable (2.4.0)
+    cinch (2.3.1)
+    cinch-identify (1.7.0)
+      cinch (~> 2.0)
+    json (1.8.3)
+
+PLATFORMS
+  x64-mingw32
+
+DEPENDENCIES
+  addressable
+  cinch
+  cinch-identify
+  json
+
+BUNDLED WITH
+   1.11.2
