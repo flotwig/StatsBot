@@ -1,0 +1,13 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    cinch (2.3.1)
+
+PLATFORMS
+  x64-mingw32
+
+DEPENDENCIES
+  cinch
+
+BUNDLED WITH
+   1.11.2
