@@ -119,6 +119,9 @@ class Stats
     @beans[:action]+=1
   end
   def leaving(msg,leaver)
+    if leaver.nick = bot.nick
+      save_channels
+    end
     case msg.command
       when 'KICK'
         str = sprintf('*** %s was kicked by %s (%s)',leaver.nick,msg.user.nick)
