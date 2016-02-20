@@ -20,7 +20,7 @@ final class StatsBot{
 			$this->mainLoop();
 		}
 	}
-	function __destruct(){
+	function __destruct(){-
 		foreach($this->channels as $channel) $this->send('PART '.$channel.' :StatsBot out');
 		$this->send('QUIT :StatsBot out');
 		fclose($this->socket);

@@ -1,9 +1,9 @@
 require 'cinch'
-require 'JSON'
+require 'json'
 class Stats
-  require 'cinch/plugin'
-  @channels = readlines('channels.txt')
-  @settings = JSON.load('settings.json')
+  include Cinch::Plugin
+  @channels = File.readlines('channels.txt')
+  @settings = JSON.load(open('settings.json','r'))
   # logged events
   listen_to :nick,    :method => :nick
   listen_to :topic,   :method => :topic
@@ -13,8 +13,8 @@ class Stats
   listen_to :join,    :method => :join
   def initialize(*args)
     super
-    unless @settings.oper.nil?
-      bot.oper(@settings.oper.user,@settings.oper.pass)
+    if @settings.has_key?('oper')
+      bot.oper(@settings['oper']['user'],@settings['oper']['pass'])
     end
     # channels are joined within the plugin because it is important to oper
     # up before joining hundreds of channels
