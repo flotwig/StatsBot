@@ -4,10 +4,11 @@ require 'json'
 require_relative 'stats.rb'
 
 cinch = Cinch::Bot.new do
-  settings = JSON.load('settings.json')
+  settings = JSON.load(open('settings.json','r'))
   configure do |config|
     config.server     = settings['server']
     config.port       = settings['port']
+    config.password   = settings['pass']
     config.ssl.use    = settings['ssl']
     config.ssl.verify = false
     config.channels   = []
