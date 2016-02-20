@@ -124,7 +124,7 @@ class Stats
     end
     case msg.command
       when 'KICK'
-        str = sprintf('*** %s was kicked by %s (%s)',leaver.nick,msg.user.nick)
+        str = sprintf('*** %s was kicked by %s (%s)',leaver.nick,msg.user.nick,msg.message)
       when 'PART'
         str = sprintf('*** Parts: %s (%s)',leaver.nick,msg.message)
       when 'QUIT'
