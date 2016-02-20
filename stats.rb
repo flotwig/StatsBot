@@ -119,7 +119,7 @@ class Stats
     @beans[:action]+=1
   end
   def leaving(msg,leaver)
-    if leaver.nick = bot.nick
+    if leaver.nick == bot.nick
       save_channels
     end
     case msg.command
