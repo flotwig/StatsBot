@@ -1,5 +1,6 @@
 source 'https://rubygems.org'
 
+gem 'bundler'
 gem 'cinch'
 gem 'cinch-identify'
 gem 'json'

@@ -1,6 +1,7 @@
+require 'bundler/setup'
 require 'cinch'
 require 'cinch/plugins/identify'
-require_relative '../cinch-basic_ctcp/lib/cinch/plugins/basic_ctcp'
+require 'cinch/plugins/basic_ctcp'
 require 'json'
 require_relative 'stats.rb'
 

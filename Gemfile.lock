@@ -19,6 +19,7 @@ PLATFORMS
 
 DEPENDENCIES
   addressable
+  bundler
   cinch
   cinch-basic_ctcp!
   cinch-identify
