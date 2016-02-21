@@ -82,7 +82,7 @@ class Stats
     cfg.close
     if File.exists?('./indexTemplate.html')
       File.open(@settings['locations']['stats']+'index.html','w').puts(IO.read('indexTemplate.html').sub('%lis%',
-          bot.channels.map { |channel| sprintf '<li><a href="%s">%s</a></li>', Addressable::URI.encode(channel.to_s).sub('#','%23'), channel.to_s
+          bot.channels.map { |channel| sprintf '<li><a href="%s.html">%s</a></li>', Addressable::URI.encode(channel.to_s).sub('#','%23'), channel.to_s
       }.join))
     end
     @channels = File.readlines('channels.txt')
@@ -119,9 +119,12 @@ class Stats
     @beans[:action]+=1
   end
   def leaving(msg,leaver)
+    if leaver.nick == bot.nick
+      save_channels
+    end
     case msg.command
       when 'KICK'
-        str = sprintf('*** %s was kicked by %s (%s)',leaver.nick,msg.user.nick)
+        str = sprintf('*** %s was kicked by %s (%s)',leaver.nick,msg.user.nick,msg.message)
       when 'PART'
         str = sprintf('*** Parts: %s (%s)',leaver.nick,msg.message)
       when 'QUIT'
