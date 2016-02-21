@@ -1,3 +1,10 @@
+GIT
+  remote: https://github.com/flotwig/cinch-basic_ctcp.git
+  revision: b3130dbcda5e607f097949b7cd6f15ceee9d19c1
+  specs:
+    cinch-basic_ctcp (1.0.2)
+      cinch (~> 2.0)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -13,6 +20,7 @@ PLATFORMS
 DEPENDENCIES
   addressable
   cinch
+  cinch-basic_ctcp!
   cinch-identify
   json
 
