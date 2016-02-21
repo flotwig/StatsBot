@@ -31,6 +31,8 @@ class Stats
     if @settings.has_key?('oper')
       bot.oper(@settings['oper']['pass'],@settings['oper']['user'])
     end
+    bot.set_mode('B')
+    bot.set_mode('I')
     # channels are joined within the plugin because it is important to oper
     # up before joining hundreds of channels
     @channels.each do |channel|
