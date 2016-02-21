@@ -16,5 +16,3 @@ Users can get a link to your stats page in the channel by using the !stats comma
 Note: Stats are not generated instantly, so it may take an hour or two for your stats to be generated initially. Please be patient.
 
 Note for channel owners: If you operate an invite-only or otherwise join-restricted channel, please add an exception for StatsBot so that he can rejoin if he is ever rebooted.
-
-Notes for IRCops: Please do not SAJOIN StatsBot to channels, it currently does not recognize the JOIN command in that way. Use INVITE instead.
