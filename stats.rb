@@ -24,8 +24,12 @@ class Stats
         :leaving => 0,
         :join => 0
     }
-    @channels = File.readlines('channels.txt')
-    @settings = JSON.load(open('settings.json','r'))
+    begin
+        @channels = File.readlines('channels.txt')
+        @settings = JSON.load(open('settings.json','r'))
+    rescue => det
+        raise "settings.json and channels.txt must be properly created before running the bot."
+	end
   end
   def connect(msg)
     if @settings.has_key?('oper')
@@ -54,7 +58,7 @@ class Stats
     msg.reply('Help is online at https://github.com/flotwig/StatsBot/blob/master/USERGUIDE.md')
     diff = (Time::now - @start).to_i
     msg.reply(sprintf('This instance has logged %d events (%d nick changes, %d topic changes, %d channel messages, %d actions, %d parts and quits, and %d joins) over %d days, %d hours, and %d minutes of uptime for an event rate of %.2f events/minute.',
-        @beans.values.inject(:+),@beans[:nick],@beans[:topic],@beans[:channel],@beans[:action],@beans[:leaving],@beans[:join],(diff/(24*3600)).to_i,((diff%(24*3600))/3600).to_i,((diff%(3600))/60).to_i,(@beans.values.inject(:+))/(diff/60)))
+        @beans.values.inject(:+),@beans[:nick],@beans[:topic],@beans[:channel],@beans[:action],@beans[:leaving],@beans[:join],(diff/(24*3600)).to_i,((diff%(24*3600))/3600).to_i,((diff%(3600))/60).to_i,Float(@beans.values.inject(:+))/(Float(diff)/Float(60))))
   end
   def log(msg,str,channel=nil)
     if channel.nil?
