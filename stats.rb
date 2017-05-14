@@ -13,6 +13,7 @@ class Stats
   listen_to :action,  :method => :action
   listen_to :leaving, :method => :leaving
   listen_to :join,    :method => :join
+  listen_to :mode_change,	:method => :mode_change
   def initialize(*args)
     super
     @start = Time::now
@@ -22,7 +23,8 @@ class Stats
         :channel => 0,
         :action => 0,
         :leaving => 0,
-        :join => 0
+        :join => 0,
+		:mode_change => 0
     }
     begin
         @channels = File.readlines('channels.txt')
@@ -57,8 +59,8 @@ class Stats
   def help(msg)
     msg.reply('Help is online at https://github.com/flotwig/StatsBot/blob/master/USERGUIDE.md')
     diff = (Time::now - @start).to_i
-    msg.reply(sprintf('This instance has logged %d events (%d nick changes, %d topic changes, %d channel messages, %d actions, %d parts and quits, and %d joins) over %d days, %d hours, and %d minutes of uptime for an event rate of %.2f events/minute.',
-        @beans.values.inject(:+),@beans[:nick],@beans[:topic],@beans[:channel],@beans[:action],@beans[:leaving],@beans[:join],(diff/(24*3600)).to_i,((diff%(24*3600))/3600).to_i,((diff%(3600))/60).to_i,Float(@beans.values.inject(:+))/(Float(diff)/Float(60))))
+    msg.reply(sprintf('This instance has logged %d events (%d nick changes, %d topic changes, %d channel messages, %d actions, %d parts and quits, %d joins, and %d mode changes) over %d days, %d hours, and %d minutes of uptime for an event rate of %.2f events/minute.',
+        @beans.values.inject(:+),@beans[:nick],@beans[:topic],@beans[:channel],@beans[:action],@beans[:leaving],@beans[:join],@beans[:mode_change],(diff/(24*3600)).to_i,((diff%(24*3600))/3600).to_i,((diff%(3600))/60).to_i,Float(@beans.values.inject(:+))/(Float(diff)/Float(60))))
   end
   def log(msg,str,channel=nil)
     if channel.nil?
@@ -150,5 +152,15 @@ class Stats
     str = sprintf('*** Joins: %s (%s@%s)',msg.user.nick,msg.user.user,msg.user.host)
     log(msg,str)
     @beans[:join]+=1
+  end
+  def mode_change(msg, modes)
+	modes.each do |direction, mode, param|
+		dirchar = '-'
+		if direction == :add
+			dirchar = '+'
+		end
+		log(msg, sprintf('*** %s sets mode: %s%s %s', msg.user.nick, dirchar, mode, param))
+	end
+	@beans[:mode_change]+=1
   end
 end
