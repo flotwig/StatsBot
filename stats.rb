@@ -112,7 +112,7 @@ class Stats
     @beans[:nick]+=1
   end
   def topic(msg)
-    str = sprintf('*** %s changes topic to %s',msg.user.nick,msg.channel.topic)
+    str = sprintf('*** %s changes topic to \'%s\'',msg.user.nick,msg.channel.topic)
     log(msg,str)
     @beans[:topic]+=1
   end
