@@ -90,7 +90,7 @@ class Stats
     cfg.close
     if File.exists?('./indexTemplate.html')
       File.open(@settings['locations']['stats']+'index.html','w').puts(IO.read('indexTemplate.html').sub('%lis%',
-          bot.channels.map { |channel| sprintf '<li><a href="%s.html">%s</a></li>', Addressable::URI.encode(channel.to_s).sub('#','%23'), channel.to_s
+          bot.channels.map { |channel| sprintf '<li><a href="%s.html" class="link">%s</a></li>', Addressable::URI.encode(channel.to_s).sub('#','%23'), channel.to_s
       }.join))
     end
     @channels = File.readlines('channels.txt')
@@ -104,6 +104,10 @@ class Stats
   end
   # various interpreters for logged events below
   def nick(msg)
+    if msg.user.last_nick == @settings['identity']['nick']
+        bot.nick = @settings['identity']['nick']
+        return
+    end
     str = sprintf('*** %s is now known as %s',msg.user.last_nick,msg.user.nick)
     # gotta log to every channel this user is in
     (msg.user.channels & msg.bot.channels).each do |channel|
