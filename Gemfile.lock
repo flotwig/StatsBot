@@ -12,9 +12,10 @@ GEM
     cinch (2.3.1)
     cinch-identify (1.7.0)
       cinch (~> 2.0)
-    json (1.8.3)
+    json (2.1.0)
 
 PLATFORMS
+  ruby
   x64-mingw32
 
 DEPENDENCIES
@@ -24,6 +25,3 @@ DEPENDENCIES
   cinch-basic_ctcp!
   cinch-identify
   json
-
-BUNDLED WITH
-   1.11.2
