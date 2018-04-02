@@ -16,5 +16,7 @@
 		"nick": "StatsBot",
 		"ident": "statsbot",
 		"realname": "StatsBot"
-	}
+	},
+	"check_registered": true,
+	"registered_mode": "r"
 }
