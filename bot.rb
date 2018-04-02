@@ -4,6 +4,7 @@ require 'cinch/plugins/identify'
 require 'cinch/plugins/basic_ctcp'
 require 'json'
 require_relative 'stats.rb'
+require_relative 'reg_check.rb'
 
 cinch = Cinch::Bot.new do
   settings = JSON.load(open('settings.json','r'))
@@ -21,6 +22,7 @@ cinch = Cinch::Bot.new do
     config.plugins.prefix = '!'
     config.plugins.plugins = [
         Stats,
+        RegCheck,
         Cinch::Plugins::Identify,
         Cinch::Plugins::BasicCTCP
     ]
@@ -32,6 +34,10 @@ cinch = Cinch::Bot.new do
     config.plugins.options[Cinch::Plugins::BasicCTCP][:reply] = {
         :version  => 'StatsBot, an IRC statistics bot by /u/flotwig.',
         :source   => 'https://github.com/flotwig/StatsBot'
+    }
+    config.plugins.options[RegCheck] = {
+        :check => settings['check_registered'],
+        :mode => settings['registered_mode']
     }
   end
 end
